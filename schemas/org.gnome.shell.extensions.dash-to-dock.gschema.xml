@@ -6,7 +6,18 @@
     <value value='2' nick='launch'/>
     <value value='3' nick='cycle-windows'/>
   </enum>
+  <enum id='org.gnome.shell.extensions.dash-to-dock.placement'>
+    <value value='0' nick='left'/>
+    <value value='1' nick='right'/>
+    <value value='2' nick='top'/>
+    <value value='3' nick='bottom'/>
+  </enum>
   <schema path="/org/gnome/shell/extensions/dash-to-dock/" id="org.gnome.shell.extensions.dash-to-dock">
+    <key name="dock-placement" enum="org.gnome.shell.extensions.dash-to-dock.placement">
+      <default>'left'</default>
+      <summary>Dock placement</summary>
+      <description>Dock is shown on the Left, Right, Top or Bottom</description>
+    </key>
     <key type="d" name="animation-time">
       <default>0.25</default>
       <summary>Animation time</summary>
