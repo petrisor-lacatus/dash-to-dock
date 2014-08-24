@@ -136,6 +136,9 @@ const myDash = new Lang.Class({
         this._shownInitially = false;
 
         this._settings = settings;
+        this._direction = this._settings.get_enum('dock-placement');
+        this._isHorizontal = ( this._direction== Direction.TOP
+                           || this._direction== Direction.BOTTOM);
         this._signalHandler = new Convenience.globalSignalHandler();
 
         this._dragPlaceholder = null;
@@ -146,7 +149,7 @@ const myDash = new Lang.Class({
         this._labelShowing = false;
 
         this._container = new myDashActor(settings);
-        this._box = new St.BoxLayout({ vertical: true,
+        this._box = new St.BoxLayout({ vertical: !this._isHorizontal,
                                        clip_to_allocation: true });
         this._box._delegate = this;
         this._container.add_actor(this._box);
@@ -162,13 +165,23 @@ const myDash = new Lang.Class({
         this._container.add_actor(this._showAppsIcon);
 
         this.actor = new St.Bin({ child: this._container,
-            y_align: St.Align.START });
-        this.actor.connect('notify::height', Lang.bind(this,
-            function() {
-                if (this._maxHeight != this.actor.height)
-                    this._queueRedisplay();
-                this._maxHeight = this.actor.height;
-            }));
+            y_align: St.Align.START, x_align: St.Align.START });
+
+        if(this._isHorizontal) {
+            this.actor.connect('notify::width', Lang.bind(this,
+                function() {
+                    if (this._maxHeight != this.actor.width)
+                        this._queueRedisplay();
+                    this._maxHeight = this.actor.width;
+                }));
+        } else {
+            this.actor.connect('notify::height', Lang.bind(this,
+                function() {
+                    if (this._maxHeight != this.actor.height)
+                        this._queueRedisplay();
+                    this._maxHeight = this.actor.height;
+                }));
+        }
 
         this._workId = Main.initializeDeferredWork(this._box, Lang.bind(this, this._redisplay));
 
@@ -414,6 +427,7 @@ const myDash = new Lang.Class({
         // Enforce the current icon size during the size request
         firstIcon.setIconSize(this.iconSize);
         [minHeight, natHeight] = firstButton.get_preferred_height(-1);
+        [minWidth, natWidth] = firstButton.get_preferred_height(-1);
 
         let scaleFactor = St.ThemeContext.get_for_stage(global.stage).scale_factor;
         let iconSizes = Dash.baseIconSizes.map(function(s) {
@@ -421,8 +435,13 @@ const myDash = new Lang.Class({
         });
 
         // Subtract icon padding and box spacing from the available height
-        availHeight -= iconChildren.length * (natHeight - this.iconSize * scaleFactor) +
-                       (iconChildren.length - 1) * spacing;
+        if(this._isHorizontal){
+            availHeight -= iconChildren.length * (natWidth - this.iconSize * scaleFactor) +
+                           (iconChildren.length - 1) * spacing;
+        } else {
+            availHeight -= iconChildren.length * (natHeight - this.iconSize * scaleFactor) +
+                           (iconChildren.length - 1) * spacing;
+        }
 
         let availSize = availHeight / iconChildren.length;
 
