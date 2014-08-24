@@ -29,6 +29,8 @@ function enable() {
     dock = new DockedDash.dockedDash(settings);
     intellihide = new Intellihide.intellihide(show, hide, dock, settings);
 
+    bindSettingsChanges();
+
 }
 
 function disable() {
@@ -41,3 +43,11 @@ function disable() {
     settings = null;
 }
 
+
+function bindSettingsChanges() {
+    // This settings change require a full reload.
+    settings.connect('changed::dock-placement', function(){
+        disable();
+        enable();
+    });
+}
