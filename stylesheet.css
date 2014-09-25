@@ -15,24 +15,33 @@
     padding-bottom:1px;
 }
 
+
 /* Shrink the dash by reducing padding and border radius */
 #dashtodockContainer.dashtodock #dash {
-    padding: 1px;
-    border: 0px;
+    border:1px;
 }
+
 #dashtodockContainer.dashtodock.left #dash {
+    padding: 1px 0px;
+    border-left: 0px;
     border-radius: 0px 6px 6px 0px;
 }
 
 #dashtodockContainer.dashtodock.right #dash {
+    padding: 1px 0px;
+    border-right: 0px;
     border-radius: 6px 0px 0px 6px;
 }
 
 #dashtodockContainer.dashtodock.top #dash {
+    padding: 0px 1px;
+    border-top: 0px;
     border-radius: 0px 0px 6px 6px;
 }
 
 #dashtodockContainer.dashtodock.bottom #dash {
+    padding: 0px 1px;
+    border-bottom: 0px;
     border-radius: 6px 6px 0px 0px;
 }
 
